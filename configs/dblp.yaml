@@ -1,0 +1,52 @@
+seed: 42
+device: cuda
+
+dataset:
+  name: dblp
+  format: hence_raw
+  root: datasets
+
+task:
+  target_node_type: author
+
+train:
+  epochs: 1000
+  lr: 0.005
+  weight_decay: 0.0005
+
+model:
+  name: han
+  hidden_dim: 128
+  out_dim: 4
+  heads: 8
+  dropout: 0.5
+
+explain:
+  num_hops: 2  
+  max_path_len: 6
+  topk_paths: 1   # 关键元路径数量
+  mask_lr: 0.05  # 解释掩码优化时的学习率 
+  mask_epochs: 100  # 解释样本的掩码优化轮数
+  lambda_pred: 2  # 预测目标损失权重
+  lambda_meta: 1 # 元路径语义损失权重
+  lambda_spar: 1 # 稀疏性约束
+  lambda_ent: 0.001 # 让 mask 更接近 0/1，而不是很多 0.5 附近的软值
+  
+  speedup: false
+  verbose: false
+  all_test_nodes: false
+  use_instance_cache: true
+
+  use_meta_loss: true
+  use_keypath_ranking: true
+  use_key_sparsity: true
+  uniform_edge_perturbation: false
+  semantic_selection: true
+
+
+  preserve_coeff_on: 0.6 # 当某个语义结构“应该被保留”时，给它多少奖励/约束
+  preserve_coeff_off: 0.0 # 当结构“不要求保留”时，对它是否额外施加约束
+  preserve_ratio_floor: 0.9  # 关键语义结构最少要保留多少比例
+  edge_preserve_coeff_on: 10 # 关键边保留约束的强度
+  edge_preserve_coeff_off: 0.0 # 非关键边保留的额外约束
+  edge_preserve_floor: 0.9 # 关键边的保留下限
